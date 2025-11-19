@@ -112,4 +112,4 @@ def submit_data(n_clicks, pct_above_bachelors, race_pct_white, race_pct_asian,
     return predict(payload)
 
 if __name__ == "__main__":
-    app.run(port=8050)
+    app.run()
