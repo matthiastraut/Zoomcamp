@@ -6,7 +6,7 @@
 This project combines data from three different sources to explain electoral behaviour. Namely, we look at the socioeconomic composition of over 3000 counties in the United States
 and their voting in the 2024 Presidential Election to try to understand which factors explain voting for one candidate over another.
 
-We use **XGBoost** to identify the statistically most significant explanatory variables and proceed to give users the option to predict voting outcomes based on different assumptions about the population of a given county.
+We use **XGBoost** to identify the statistically most significant explanatory variables and proceed to give users the option to predict voting outcomes based on different assumptions about the characteristics of a given county.
 
 ---
 
