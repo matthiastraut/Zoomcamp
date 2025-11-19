@@ -2,4 +2,7 @@ numpy
 pandas
 dash
 dash_bootstrap_components
+pickle
 pydantic
+xgboost
+scikit-learn
