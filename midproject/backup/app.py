@@ -1,34 +1,13 @@
-# app_v3.py
+# app.py
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-import numpy as np
-import pandas as pd
-import pickle
-from typing import Dict, Any, Literal
-from pydantic import BaseModel
+import requests
 
-app = dash.Dash(
-    __name__,
-    external_stylesheets=[dbc.themes.BOOTSTRAP]
-)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-server = app.server
-
-# Loading the xgboost model with pickle
-with open('model.pkl', 'rb') as f:
-    xgb = pickle.load(f)
-    f.close()
-
-def dv(input_data):
-    input_df = pd.DataFrame(index=input_data.keys(), data=list(input_data.values()))
-    input_df = input_df.T
-    return input_df
-
-def predict(input_data: Dict[str, Any]):
-    y_pred = xgb.predict(dv(input_data))[0]
-    return y_pred
+server = app.server  # in case you deploy
 
 default_values = {
     "pct_above_bachelors": 0.1,
@@ -40,6 +19,7 @@ default_values = {
 }
 
 def slider(id, value, minv=0, maxv=1, step=0.01):
+    """Bootstrap range slider"""
     return html.Div(
         [
             html.Label(id.replace("_", " ").title(), style={"fontWeight": "500"}),
@@ -101,15 +81,25 @@ def submit_data(n_clicks, pct_above_bachelors, race_pct_white, race_pct_asian,
         return "Awaiting input..."
 
     payload = {
-        "pct_above_bachelors": float(pct_above_bachelors),
-        "race_pct_white": float(race_pct_white),
-        "race_pct_asian": float(race_pct_asian),
-        "pct_bachelors_and_above": float(pct_bachelors_and_above),
-        "workers_wo_health_ins": float(workers_wo_health_ins),
-        "population": float(population),
+        "pct_above_bachelors": pct_above_bachelors,
+        "race_pct_white": race_pct_white,
+        "race_pct_asian": race_pct_asian,
+        "pct_bachelors_and_above": pct_bachelors_and_above,
+        "workers_wo_health_ins": workers_wo_health_ins,
+        "population": population,
     }
 
-    return predict(payload)
+    payload = {k: float(v) for k, v in payload.items()}
+
+    try:
+        r = requests.post("http://localhost:9696/predict", json=payload)
+        if r.status_code == 200:
+            return r.json()["Trump vote share:"]
+        else:
+            return f"API error: {r.status_code}"
+    except Exception as e:
+        return f"Connection error: {e}"
+
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=8050)

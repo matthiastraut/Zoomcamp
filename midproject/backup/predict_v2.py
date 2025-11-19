@@ -1,7 +1,7 @@
 # predict_v2.py
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
-from app_v2 import app as dash_app
+from midproject.backup.app_v2 import app as dash_app
 import numpy as np
 import pandas as pd
 import pickle
