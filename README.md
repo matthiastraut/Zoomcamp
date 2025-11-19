@@ -12,6 +12,8 @@ We use **XGBoost** to identify the statistically most significant explanatory va
 
 ### Features
 
+All files are contained in the folder **/midproject**.
+
 **Input Features:**
 
 (1) Election data (2024_US_County_Level_Presidential_Results.csv):
